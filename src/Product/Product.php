@@ -15,15 +15,20 @@ class Product
     private $details;
 
     /**
-     * Product constructor.
-     * @param int $id
+     * @var int
      */
-    private function __construct(int $id)
+    private $searchCount = 0;
+
+    /**
+     * Product constructor.
+     * @param string $id
+     */
+    private function __construct(string $id)
     {
         $this->id = $id;
     }
 
-    public static function withId(int $id) : Product
+    public static function withId(string $id) : Product
     {
         return new static($id);
     }
@@ -41,5 +46,15 @@ class Product
     public function getDetails() : array
     {
         return $this->details;
+    }
+
+    public function incrementSearchCount() : void
+    {
+        $this->searchCount++;
+    }
+
+    public function getSearchCount() : int
+    {
+        return $this->searchCount;
     }
 }

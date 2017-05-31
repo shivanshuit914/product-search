@@ -5,8 +5,10 @@ namespace Product;
 interface ProductDatabaseRepositoryInterface
 {
     /**
-     * @param int $productId
-     * @return mixed
+     * @param string $productId
+     * @return Product
      */
-    public function findById(int $productId);
+    public function findById(string $productId);
+
+    public function add(Product $product);
 }

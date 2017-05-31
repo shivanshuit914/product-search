@@ -28,4 +28,9 @@ class ProductSpec extends ObjectBehavior
         $this->hasDetails(['name' => 'product1']);
         $this->getDetails()->shouldReturn(['name' => 'product1']);
     }
+
+    function it_contains_search_count()
+    {
+        $this->incrementSearchCount();
+    }
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Repository;
 
 use Exception;
@@ -10,10 +9,10 @@ use Product\ProductCacheRepositoryInterface;
 class FileSystemCacheRepository implements ProductCacheRepositoryInterface
 {
     /**
-     * @param int $id
+     * @param string $id
      * @return bool|mixed
      */
-    public function findById(int $id)
+    public function findById(string $id)
     {
         $cacheFile = $this->getFilePath($id);
         if (!file_exists($cacheFile)) {
@@ -30,12 +29,12 @@ class FileSystemCacheRepository implements ProductCacheRepositoryInterface
     }
 
     /**
-     * @param int $id
+     * @param string $id
      * @return string
      */
-    private function getFilePath(int $id)
+    private function getFilePath(string $id)
     {
-        return '../../cache/product_' . $id;
+        return __DIR__ . '/../../cache/product_' . $id;
     }
 
     /**
@@ -54,5 +53,24 @@ class FileSystemCacheRepository implements ProductCacheRepositoryInterface
         }
 
         fclose($fileHandler);
+    }
+
+    public function update(Product $product)
+    {
+        $cacheFile = $this->getFilePath($product->getId());
+
+        if (file_exists($cacheFile)) {
+            unlink($cacheFile);
+        }
+
+        $this->add($product);
+    }
+
+    public function delete(string $id)
+    {
+        $cacheFile = $this->getFilePath($id);
+        if (file_exists($cacheFile)) {
+            unlink($cacheFile);
+        }
     }
 }

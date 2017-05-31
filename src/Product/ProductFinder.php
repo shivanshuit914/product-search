@@ -27,7 +27,7 @@ class ProductFinder
 
     /**
      * @param int $productId
-     * @return mixed
+     * @return Product
      */
     public function findProductDetails(int $productId)
     {
@@ -37,6 +37,10 @@ class ProductFinder
             return $productDetails;
         }
 
-        return $this->databaseRepository->findById($productId);
+        // assuming will always return product for given Id.
+        $productDetails = $this->databaseRepository->findById($productId);
+        $this->cacheRepository->add($productDetails);
+
+        return $productDetails;
     }
 }

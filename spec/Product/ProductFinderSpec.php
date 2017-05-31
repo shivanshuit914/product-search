@@ -32,6 +32,7 @@ class ProductFinderSpec extends ObjectBehavior
         $product = Product::withId(123);
         $product->hasDetails(['name' => 'product1']);
         $cacheRepository->findById(123)->willReturn(null);
+        $cacheRepository->add($product)->willReturn(null);
         $databaseRepository->findById(123)->willReturn($product);
     }
 }

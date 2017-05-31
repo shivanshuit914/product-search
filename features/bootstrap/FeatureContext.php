@@ -4,14 +4,32 @@ use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Controller\ProductController;
 use Product\Product;
 use Product\ProductFinder;
+use Repository\DatabaseRepository;
+use Repository\FileSystemCacheRepository;
 
 /**
  * Defines application features from the specific context.
  */
 class FeatureContext implements Context
 {
+    /**
+     * @var array
+     */
+    private $productDetails = [];
+
+    /**
+     * @var FileSystemCacheRepository
+     */
+    private $fileSystemRepository;
+
+    /**
+     * @var DatabaseRepository
+     */
+    private $databaseRepository;
+
     /**
      * Initializes context.
      *
@@ -21,23 +39,29 @@ class FeatureContext implements Context
      */
     public function __construct()
     {
+        $this->fileSystemRepository = new FileSystemCacheRepository();
+        $this->databaseRepository = new DatabaseRepository();
     }
 
     /**
      * @Given there is a product with identification :id
      */
-    public function thereIsAProductWithIdentification(int $id)
+    public function thereIsAProductWithIdentification(string $id)
     {
-        Product::withId($id);
+        $product = Product::withId($id);
+        $product->hasDetails(['name' => 'product 1', 'price' => 100]);
+        $this->fileSystemRepository->add($product);
+        $product->incrementSearchCount();
+        $this->databaseRepository->add($product);
     }
 
     /**
      * @When I search for details of product with identification :id
      */
-    public function iSearchForDetailsOfProductWithIdentification(int $id)
+    public function iSearchForDetailsOfProductWithIdentification(string $id)
     {
-        $productFinder = new ProductFinder();
-        $productFinder->findProductDetails($id);
+        $productController = new ProductController($this->fileSystemRepository, $this->databaseRepository);
+        $this->productDetails = json_decode($productController->getDetails($id), true);
     }
 
     /**
@@ -45,14 +69,34 @@ class FeatureContext implements Context
      */
     public function iShouldReceiveProductDetailsAsBelow(TableNode $table)
     {
-        throw new PendingException();
+        $column = $table->getColumnsHash();
+        PHPUnit_Framework_Assert::assertEquals($column[0]['name'], $this->productDetails['data']['name']);
     }
 
     /**
-     * @Then will increase product :arg1 search count to :arg2
+     * @Then will increase product :id search count to :searchCount
      */
-    public function willIncreaseProductSearchCountTo($arg1, $arg2)
+    public function willIncreaseProductSearchCountTo(string $id, int $searchCount)
     {
-        throw new PendingException();
+        $product = $this->fileSystemRepository->findById($id);
+        PHPUnit_Framework_Assert::assertEquals($searchCount, $product->getSearchCount());
     }
+
+    /**
+     * @Given product :id is not exists in to the cache
+     */
+    public function productIsNotExistsInToTheCache(string $id)
+    {
+        $this->fileSystemRepository->delete($id);
+    }
+
+    /**
+     * @Then will create cache record for product :id
+     */
+    public function willCreateCacheRecordForProduct(string $id)
+    {
+        $product = $this->fileSystemRepository->findById($id);
+        PHPUnit_Framework_Assert::assertEquals($id, $product->getId());
+    }
+
 }

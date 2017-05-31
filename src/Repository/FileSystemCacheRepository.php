@@ -55,6 +55,9 @@ class FileSystemCacheRepository implements ProductCacheRepositoryInterface
         fclose($fileHandler);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function update(Product $product)
     {
         $cacheFile = $this->getFilePath($product->getId());
@@ -66,6 +69,9 @@ class FileSystemCacheRepository implements ProductCacheRepositoryInterface
         $this->add($product);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function delete(string $id)
     {
         $cacheFile = $this->getFilePath($id);

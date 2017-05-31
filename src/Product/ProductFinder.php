@@ -27,6 +27,7 @@ class ProductFinder
 
     /**
      * @param int $productId
+     *
      * @return Product
      */
     public function findProductDetails(int $productId)

@@ -28,7 +28,15 @@ class ProductController
         ProductCacheRepositoryInterface $cacheRepository,
         ProductDatabaseRepositoryInterface $databaseRepository
     ) {
+
+        // cache repository can be change through DI container.
+        // If wants to use memcache or redis just need to implement interface
+        // and inject it through DI.
         $this->cacheRepository = $cacheRepository;
+
+        // same here can be injectable through DI container
+        // can be swap using Mysql or ElasticSearch at any time by just changing
+        // container YML or config file.
         $this->databaseRepository = $databaseRepository;
     }
 

@@ -18,7 +18,10 @@ class SearchCounter
         $this->productCacheRepository = $productCacheRepository;
     }
 
-    public function count(Product $product)
+    /**
+     * @param Product $product
+     */
+    public function count(Product $product) : void
     {
         $product->incrementSearchCount();
         $this->productCacheRepository->update($product);

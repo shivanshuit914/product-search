@@ -13,6 +13,7 @@ class DatabaseRepository implements ProductDatabaseRepositoryInterface
      */
     private $products = [];
 
+    // we can inject ElasticSearch or Mysql connection here.
     public function __construct()
     {
     }
@@ -29,6 +30,9 @@ class DatabaseRepository implements ProductDatabaseRepositoryInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function add(Product $product)
     {
         $this->products[] = $product;

@@ -4,6 +4,8 @@ use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Product\Product;
+use Product\ProductFinder;
 
 /**
  * Defines application features from the specific context.
@@ -22,19 +24,20 @@ class FeatureContext implements Context
     }
 
     /**
-     * @Given there is a product with identification :arg1
+     * @Given there is a product with identification :id
      */
-    public function thereIsAProductWithIdentification($arg1)
+    public function thereIsAProductWithIdentification(int $id)
     {
-        throw new PendingException();
+        Product::withId($id);
     }
 
     /**
-     * @When I search for details of product with identification :arg1
+     * @When I search for details of product with identification :id
      */
-    public function iSearchForDetailsOfProductWithIdentification($arg1)
+    public function iSearchForDetailsOfProductWithIdentification(int $id)
     {
-        throw new PendingException();
+        $productFinder = new ProductFinder();
+        $productFinder->findProductDetails($id);
     }
 
     /**

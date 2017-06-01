@@ -1,4 +1,4 @@
-# Product Search Example
+# Product Search Example. Requires PHP 7.1
     
     // to load depenencies
     composer install
